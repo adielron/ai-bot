@@ -12,7 +12,7 @@ const chatRequestSchema = z.object({
 });
 
 export const chatController = {
-   async sendMessgae(req: Request, res: Response) {
+   async sendMessage(req: Request, res: Response) {
       const parseResult = chatRequestSchema.safeParse(req.body);
       if (!parseResult.success) {
          res.status(400).json({ errors: parseResult.error.format() });
@@ -20,10 +20,7 @@ export const chatController = {
 
       try {
          const { prompt, conversationId } = req.body;
-         const response = await chatService.sendMesssage(
-            prompt,
-            conversationId
-         );
+         const response = await chatService.sendMessage(prompt, conversationId);
          res.json({ message: response.message });
       } catch (error) {
          res.status(500).json({

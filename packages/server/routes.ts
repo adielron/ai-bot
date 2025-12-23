@@ -12,6 +12,6 @@ router.get('/router/hello', (req: Request, res: Response) => {
    res.json({ message: 'Hello, World!' });
 });
 
-router.post('/api/chat', chatController.sendMessgae);
+router.post('/api/chat', chatController.sendMessage);
 
 export default router;
