@@ -1,0 +1,2 @@
+`Summerie the following customer reviews into a short paragraph highlighting the key themes both pos and neg:
+    {{reviews}}`

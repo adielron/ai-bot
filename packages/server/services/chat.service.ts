@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { conversationRepositories } from '../repositories/conversation.repositories';
-import OpenAI from 'openai';
 import template from '../prompts/chatbot.txt';
 import {
    getHistory,
@@ -9,9 +8,7 @@ import {
    resetHistory,
 } from '../src/memory/chat.memory.ts';
 
-const client = new OpenAI({
-   apiKey: process.env.OPENAI_API_KEY,
-});
+import { llmClient } from '../llm/client.ts';
 
 const parkInfo = fs.readFileSync(
    path.join(__dirname, '..', 'prompts', 'WonderWorld.md'),
@@ -44,22 +41,22 @@ export const chatService = {
          content: msg.content,
       }));
 
-      const response = await client.responses.create({
+      const response = await llmClient.generateText({
          model: 'gpt-4o-mini',
+         prompt,
          instructions,
-         input: messages,
+         maxTokens: 200,
          temperature: 0.2,
-         max_output_tokens: 200,
-         previous_response_id:
+         previousResponseId:
             conversationRepositories.getLastResponseId(conversationId),
       });
 
-      await addMessage({ role: 'assistant', content: response.output_text });
+      await addMessage({ role: 'assistant', content: response.text });
 
       conversationRepositories.setLastResponseId(conversationId, response.id);
       return {
          id: response.id,
-         message: response.output_text,
+         message: response.text,
       };
    },
 };
