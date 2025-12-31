@@ -30,6 +30,10 @@ Available intents and parameters:
 4. chat
    parameters: {}
 
+
+5.analyzeReview
+   parameters: { "reviewText": string }
+
 --------------------
 EXAMPLES
 --------------------
@@ -82,6 +86,27 @@ Assistant:
   "confidence": 0.8
 }
 
+
+User: "I went to this restaurant yesterday. The food was okay, but the waiter spilled soup on me and the service was slow. Would not recommend."
+Assistant:
+{
+  "intent": "analyzeReview",
+  "parameters": {
+    "reviewText": "I went to this restaurant yesterday. The food was okay, but the waiter spilled soup on me and the service was slow. Would not recommend."
+  },
+  "confidence": 0.95
+}
+
+User: "The hotel room was clean, but the air conditioner was broken and the staff didn’t help."
+Assistant:
+{
+  "intent": "analyzeReview",
+  "parameters": {
+    "reviewText": "The hotel room was clean, but the air conditioner was broken and the staff didn’t help."
+  },
+  "confidence": 0.9
+}
+
 --------------------
 IMPORTANT RULES
 --------------------
@@ -96,4 +121,8 @@ IMPORTANT RULES
 
 
 
+- If the user provides a long opinionated text describing an experience,
+  complaints, praise, or mixed feedback → use analyzeReview.
 
+- Do NOT summarize or analyze in the router.
+  Only classify and extract reviewText.

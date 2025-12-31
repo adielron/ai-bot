@@ -6,6 +6,7 @@ import { calculateMath } from '../tools/math';
 import { getExchangeRate } from '../tools/exchange';
 import { chatService } from '../../services/chat.service';
 import { addMessage } from '../../src/memory/chat.memory';
+import { analyzeReview } from '../tools/analyzeReview';
 
 const router = express.Router();
 
@@ -28,7 +29,6 @@ router.post('/api/agent', async (req, res) => {
       parseResult.data as AgentRequest;
 
    try {
-      // Determine the user's intent and parameters
       addMessage({ role: 'user', content: userInput });
 
       const decision = await routeUserIntent(userInput);
@@ -45,6 +45,9 @@ router.post('/api/agent', async (req, res) => {
             break;
          case 'exchange':
             result = getExchangeRate(decision.parameters.currency);
+            break;
+         case 'analyzeReview':
+            result = await analyzeReview(decision.parameters.reviewText);
             break;
          case 'chat':
          default:

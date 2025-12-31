@@ -2,15 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { conversationRepositories } from '../repositories/conversation.repositories';
 import template from '../prompts/chatbot.txt';
-
 import chatPersonality from '../prompts/personalityBot.txt';
-
 import {
    getHistory,
    addMessage,
    resetHistory,
 } from '../src/memory/chat.memory.ts';
-
 import { llmClient } from '../llm/client.ts';
 
 // const parkInfo = fs.readFileSync(

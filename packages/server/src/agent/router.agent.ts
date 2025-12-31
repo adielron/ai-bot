@@ -5,17 +5,12 @@ const client = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,
 });
 
-/**
- * סוגי הפעולות שהסוכן יודע לנתב אליהן
- */
 export type RouteDecision = {
-   intent: 'weather' | 'math' | 'exchange' | 'chat';
+   intent: 'weather' | 'math' | 'exchange' | 'chat' | 'analyzeReview';
    parameters: Record<string, any>;
    confidence: number;
 };
-/**
- * פונקציית הניתוב הראשית
- */
+
 export async function routeUserIntent(
    userInput: string
 ): Promise<RouteDecision> {
