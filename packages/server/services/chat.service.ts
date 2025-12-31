@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { conversationRepositories } from '../repositories/conversation.repositories';
 import template from '../prompts/chatbot.txt';
+
+import chatPersonality from '../prompts/personalityBot.txt';
+
 import {
    getHistory,
    addMessage,
@@ -10,11 +13,11 @@ import {
 
 import { llmClient } from '../llm/client.ts';
 
-const parkInfo = fs.readFileSync(
-   path.join(__dirname, '..', 'prompts', 'WonderWorld.md'),
-   'utf-8'
-);
-const instructions = template.replace('{parkInfo}', parkInfo);
+// const parkInfo = fs.readFileSync(
+//    path.join(__dirname, '..', 'prompts', 'WonderWorld.md'),
+//    'utf-8'
+// );
+// const instructions = template.replace('{parkInfo}', parkInfo);
 
 type chatResponse = {
    id: string;
@@ -36,15 +39,17 @@ export const chatService = {
 
       await addMessage({ role: 'user', content: prompt });
 
-      const messages = getHistory().map((msg) => ({
-         role: msg.role,
-         content: msg.content,
-      }));
+      const messagesString = getHistory()
+         .map(
+            (msg) =>
+               `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`
+         )
+         .join('\n');
 
       const response = await llmClient.generateText({
          model: 'gpt-4o-mini',
-         prompt,
-         instructions,
+         prompt: messagesString,
+         instructions: chatPersonality,
          maxTokens: 200,
          temperature: 0.2,
          previousResponseId:

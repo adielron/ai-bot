@@ -33,15 +33,15 @@ router.post('/api/agent', async (req, res) => {
       let result: string;
 
       // Route to the appropriate "app"
-      switch (decision.type) {
+      switch (decision.intent) {
          case 'weather':
-            result = await getWeather(decision.city!);
+            result = await getWeather(decision.parameters.city);
             break;
          case 'math':
-            result = calculateMath(decision.expression!);
+            result = calculateMath(decision.parameters.expression);
             break;
          case 'exchange':
-            result = getExchangeRate(decision.currency!);
+            result = getExchangeRate(decision.parameters.currency);
             break;
          case 'chat':
          default:

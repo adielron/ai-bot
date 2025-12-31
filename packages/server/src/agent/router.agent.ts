@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import classifier from '../../prompts/classifier.prompt.txt';
 
 const client = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,
@@ -7,12 +8,11 @@ const client = new OpenAI({
 /**
  * סוגי הפעולות שהסוכן יודע לנתב אליהן
  */
-export type RouteDecision =
-   | { type: 'weather'; city: string }
-   | { type: 'math'; expression: string }
-   | { type: 'exchange'; currency: string }
-   | { type: 'chat' };
-
+export type RouteDecision = {
+   intent: 'weather' | 'math' | 'exchange' | 'chat';
+   parameters: Record<string, any>;
+   confidence: number;
+};
 /**
  * פונקציית הניתוב הראשית
  */
@@ -26,42 +26,7 @@ export async function routeUserIntent(
       input: [
          {
             role: 'system',
-            content: `
-You are an intent classification engine.
-
-Your job is to classify the user's input into ONE of the following intents
-and extract the required parameter.
-
-Return ONLY valid JSON. No explanations.
-
-Intents:
-
-1. weather
-   - parameter: city (string)
-
-2. math
-   - parameter: expression (string)
-
-3. exchange
-   - parameter: currency (string, like USD, EUR)
-
-4. chat
-   - no parameters
-
-JSON formats:
-
-Weather:
-{ "type": "weather", "city": "Haifa" }
-
-Math:
-{ "type": "math", "expression": "50 * 3 / 2" }
-
-Exchange:
-{ "type": "exchange", "currency": "USD" }
-
-Chat:
-{ "type": "chat" }
-        `,
+            content: classifier,
          },
          {
             role: 'user',
@@ -70,12 +35,16 @@ Chat:
       ],
    });
 
-   const output = response.output_text;
-   console.log('LLM raw output:', output);
+   const decision = JSON.parse(response.output_text) as RouteDecision;
+   console.log('decision: ', decision);
 
    try {
-      return JSON.parse(output) as RouteDecision;
+      return JSON.parse(response.output_text) as RouteDecision;
    } catch {
-      return { type: 'chat' };
+      return {
+         intent: 'chat',
+         parameters: {},
+         confidence: 0,
+      };
    }
 }
