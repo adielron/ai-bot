@@ -5,6 +5,7 @@ import { getWeather } from '../tools/weather';
 import { calculateMath } from '../tools/math';
 import { getExchangeRate } from '../tools/exchange';
 import { chatService } from '../../services/chat.service';
+import { addMessage } from '../../src/memory/chat.memory';
 
 const router = express.Router();
 
@@ -28,6 +29,8 @@ router.post('/api/agent', async (req, res) => {
 
    try {
       // Determine the user's intent and parameters
+      addMessage({ role: 'user', content: userInput });
+
       const decision = await routeUserIntent(userInput);
 
       let result: string;
