@@ -30,9 +30,6 @@ export async function routeUserIntent(
       ],
    });
 
-   const decision = JSON.parse(response.output_text) as RouteDecision;
-   console.log('decision: ', decision);
-
    try {
       return JSON.parse(response.output_text) as RouteDecision;
    } catch {

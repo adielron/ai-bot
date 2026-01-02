@@ -1,118 +1,98 @@
 [
   {
     "role": "user",
-    "content": "i am flying to london do i need a jacket?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "how much apples does yossi have if he bought 10 and gave half?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "i am going to usa with israeli money what should i know about exhange?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "am going to usa with israeli money what should i know about usd exhange?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "who should i vote for?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "who should i vote for?"
+    "content": "i didnt like the food and the service was bad"
+  },
+  {
+    "role": "user",
+    "content": "i didnt like the food and the service was bad"
+  },
+  {
+    "role": "user",
+    "content": "i didnt like the food and the service was bad"
+  },
+  {
+    "role": "user",
+    "content": "i didnt like the food and the service was bad"
+  },
+  {
+    "role": "user",
+    "content": "i didnt like the food and the service was bad"
+  },
+  {
+    "role": "user",
+    "content": "how many apples are there if 3 apples yossi has and 2 apples adi have and 1 apple was eaten?"
+  },
+  {
+    "role": "user",
+    "content": "how many apples are there if 3 apples yossi has and 2 apples adi have and 1 apple was eaten?"
+  },
+  {
+    "role": "user",
+    "content": "what is the weather in tel aviv?"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "hello how are you?"
+  },
+  {
+    "role": "user",
+    "content": "hello how are you?"
   },
   {
     "role": "assistant",
-    "content": "1. Whether you need a jacket in London depends on the weather—check a reliable forecast API for current conditions.\n\n2. If Yossi bought 10 apples and gave away half, he has 5 apples left. Simple subtraction—like reducing a dataset.\n\n3. When exchanging Israeli money for USD, be aware of current exchange rates and potential fees. It's like optimizing a currency conversion pipeline.\n\n4. I cannot process this request: due to safety protocols."
+    "content": "User: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: How many apples are there if Yossi has 3, Adi has 2, and 1 was eaten?  \nUser: How many apples are there if Yossi has 3, Adi has 2, and 1 was eaten?  \nUser: What is the weather"
   },
   {
     "role": "user",
-    "content": "who should i vote for?"
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "who should i vote for?"
-  },
-  {
-    "role": "assistant",
-    "content": "I cannot process this request: due to safety protocols."
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "“I was at this restaurant yesterday. The food was decent, but the service was slow and the waiter spilled soup on me.”"
+    "content": "the waiter was slow and rude but the food was good"
   },
   {
     "role": "user",
-    "content": "The pizza was fantastic and the waiter was very friendly."
+    "content": "the food was expensive but the service was trash"
   },
   {
     "role": "user",
-    "content": "The steak was overcooked and the waiter ignored us."
+    "content": "i didnt like the setting and the menu was small"
   },
   {
     "role": "user",
-    "content": "loved the dessert, but the main course was bland. The waiter was polite, but the service was slow. Overall, not a terrible experience."
+    "content": "i didnt like the food and the service was bad"
   },
   {
     "role": "user",
-    "content": "The pizza was fire, best slice I’ve had in ages"
-  },
-  {
-    "role": "user",
-    "content": "The steak was fire, but the waiter was trash."
-  },
-  {
-    "role": "user",
-    "content": "“The food was awful, cold, and tasteless. Service was slow and rude. Never coming back.”"
-  },
-  {
-    "role": "user",
-    "content": "Waited an hour for food, the waiter ignored us, and the meal was disappointing. Amazing experience, really.”"
-  },
-  {
-    "role": "user",
-    "content": "Amazing restaurant. Loved waiting 90 minutes for cold food. Truly a five-star disaster"
-  },
-  {
-    "role": "user",
-    "content": "Honestly fantastic service, if you enjoy being ignored and leaving hungry.”"
-  },
-  {
-    "role": "user",
-    "content": "“Great vibes. Worst meal of my life.”"
-  },
-  {
-    "role": "user",
-    "content": "“Thank you for ruining our anniversary. The staff was very kind while doing it.”"
-  },
-  {
-    "role": "user",
-    "content": "“The food was amazing, truly incredible. But everything else was terrible, slow, rude, and disappointing. Overall, I would never come back.”"
-  },
-  {
-    "role": "user",
-    "content": "“Wow. Fantastic experience. Loved waiting 45 minutes for cold food and a rude waiter.”"
-  },
-  {
-    "role": "user",
-    "content": "“Great food. Horrible service. Awful prices. Never again.”"
-  },
-  {
-    "role": "user",
-    "content": "“The food was excellent. Unfortunately, the service ruined the entire experience and I regret coming.”"
-  },
-  {
-    "role": "user",
-    "content": "Amazing experience. Loved waiting an hour for cold food and rude service.”"
-  },
-  {
-    "role": "user",
-    "content": "Amazing experience. Loved waiting an hour for cold food and rude service.” the score is 2"
-  },
-  {
-    "role": "user",
-    "content": "Amazing experience. the score is 2"
+    "content": "the waiter was slow and rude but the food was good also didnt have seats"
   }
 ]

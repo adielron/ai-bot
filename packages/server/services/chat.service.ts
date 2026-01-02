@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import { conversationRepositories } from '../repositories/conversation.repositories';
 import template from '../prompts/chatbot.txt';
 import chatPersonality from '../prompts/personalityBot.txt';

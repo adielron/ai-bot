@@ -126,3 +126,5 @@ IMPORTANT RULES
 
 - Do NOT summarize or analyze in the router.
   Only classify and extract reviewText.
+
+  If you are uncertain about the intent, reduce the confidence proportionally.

@@ -6,7 +6,6 @@ import axios from 'axios';
 export async function getWeather(city: string): Promise<string> {
    try {
       const apiKey = process.env.OPENWEATHER_API_KEY;
-      console.log(apiKey);
 
       if (!apiKey) throw new Error('Missing OpenWeatherMap API key');
 

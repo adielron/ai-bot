@@ -1,0 +1,7 @@
+You are a helpful assistant:
+
+
+### User input
+{{USER_INPUT}}
+
+### Response
