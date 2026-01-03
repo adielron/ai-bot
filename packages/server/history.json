@@ -1,55 +1,35 @@
 [
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "hello"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello. How can I assist you today?"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "what is the weathe rin paris"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "how many fruits are  4 banans and 2 kiwi"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "the food was fire but the service is ass"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "how many fruits are 4 banans and 2 kiwi"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
-  },
-  {
-    "role": "user",
-    "content": "i didnt like the food and the service was bad"
-  },
-  {
-    "role": "user",
-    "content": "i didnt like the food and the service was bad"
-  },
-  {
-    "role": "user",
-    "content": "i didnt like the food and the service was bad"
-  },
-  {
-    "role": "user",
-    "content": "how many apples are there if 3 apples yossi has and 2 apples adi have and 1 apple was eaten?"
-  },
-  {
-    "role": "user",
-    "content": "how many apples are there if 3 apples yossi has and 2 apples adi have and 1 apple was eaten?"
-  },
-  {
-    "role": "user",
-    "content": "what is the weather in tel aviv?"
+    "content": "i didnt like to burger but waiting is fine"
   },
   {
     "role": "user",
@@ -57,42 +37,90 @@
   },
   {
     "role": "user",
-    "content": "hello how are you?"
+    "content": "what is the currency in usd"
   },
   {
     "role": "user",
-    "content": "hello how are you?"
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in euro"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in euro"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in euro"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency in usd"
+  },
+  {
+    "role": "user",
+    "content": "what is the currency as of now in thailand"
+  },
+  {
+    "role": "user",
+    "content": "what is going on right now?"
+  },
+  {
+    "role": "user",
+    "content": "what is going on right now?"
   },
   {
     "role": "assistant",
-    "content": "User: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: I didn't like the food and the service was bad.  \nUser: How many apples are there if Yossi has 3, Adi has 2, and 1 was eaten?  \nUser: How many apples are there if Yossi has 3, Adi has 2, and 1 was eaten?  \nUser: What is the weather"
+    "content": "I can’t process this request: due to safety protocols."
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "hello how are you"
   },
   {
     "role": "user",
-    "content": "i didnt like the food and the service was bad"
+    "content": "hello how are you"
   },
   {
-    "role": "user",
-    "content": "the waiter was slow and rude but the food was good"
-  },
-  {
-    "role": "user",
-    "content": "the food was expensive but the service was trash"
-  },
-  {
-    "role": "user",
-    "content": "i didnt like the setting and the menu was small"
-  },
-  {
-    "role": "user",
-    "content": "i didnt like the food and the service was bad"
-  },
-  {
-    "role": "user",
-    "content": "the waiter was slow and rude but the food was good also didnt have seats"
+    "role": "assistant",
+    "content": "Hello. I'm here, ready to assist. What do you need?"
   }
 ]

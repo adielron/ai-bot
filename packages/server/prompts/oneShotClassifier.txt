@@ -29,7 +29,13 @@ Response:
   "parameters": { "city": "London" },
   "confidence": 0.85
 }
-
+User: "What is the USD currency ?"
+Assistant:
+{
+  "intent": "exchange",
+  "parameters": { "currency": "USD" },
+  "confidence": 0.95
+}
 
 
 User: "What is the USD exchange rate?"

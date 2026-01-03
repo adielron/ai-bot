@@ -7,10 +7,12 @@ import { getExchangeRate } from '../tools/exchange';
 import { addMessage } from '../../src/memory/chat.memory';
 import { analyzeReview } from '../tools/analyzeReview';
 import { callLocalLLM } from '../../llm/ollama.client';
-import { analyzeWithPython } from '../tools/analyzeReviewHelper';
+import { analyzeWithPython } from '../../llm/bert.python';
 import OneShotClassification from '../../prompts/oneShotClassifier.txt';
 import assitance from '../../prompts/ollamaAsistace.txt';
 import { chatService } from '../../services/chat.service';
+import { decideIntent } from '../agent/router.agent.decision';
+import { executeDecision } from '../../services/execution.service';
 
 const router = express.Router();
 
@@ -23,80 +25,18 @@ type AgentRequest = z.infer<typeof agentRequestSchema>;
 
 // POST /api/agent
 router.post('/api/agent', async (req, res) => {
-   // Validate request body
    const parseResult = agentRequestSchema.safeParse(req.body);
    if (!parseResult.success) {
       return res.status(400).json({ errors: parseResult.error.format() });
    }
-
    const { prompt: userInput, conversationId } =
       parseResult.data as AgentRequest;
 
    try {
       addMessage({ role: 'user', content: userInput });
+      const decision = await decideIntent(userInput);
 
-      let decision: RouteDecision;
-
-      try {
-         const preDecision = await callLocalLLM(
-            userInput,
-            OneShotClassification
-         );
-
-         const parsed = JSON.parse(preDecision);
-         console.log(parsed);
-
-         if (
-            !parsed.intent ||
-            !parsed.parameters ||
-            typeof parsed.confidence !== 'number'
-         ) {
-            console.log('❌ Invalid router JSON structure:', parsed);
-
-            throw new Error('Invalid router JSON');
-         }
-         decision = parsed as RouteDecision;
-      } catch {
-         console.log('❌ Falling back to default open ai  router');
-         decision = await routeUserIntent(userInput);
-      }
-
-      let result: string;
-
-      // Route to the appropriate "app"
-      switch (decision.intent) {
-         case 'weather':
-            result = await getWeather(decision.parameters.city);
-            break;
-         case 'math':
-            result = calculateMath(decision.parameters.expression);
-            break;
-         case 'exchange':
-            result = getExchangeRate(decision.parameters.currency);
-            break;
-         case 'analyzeReview':
-            if (decision.confidence < 0.9) {
-               const pythonResult = await analyzeWithPython(
-                  decision.parameters.reviewText
-               );
-               result = `Sentiment: ${pythonResult.sentiment}, Confidence: ${pythonResult.confidence}`;
-            } else {
-               result = await analyzeReview(decision.parameters.reviewText);
-            }
-            break;
-         case 'chat':
-         default:
-            // Call chatService directly
-            const response = await chatService.sendMessage(
-               userInput,
-               conversationId
-            );
-            result = response.message;
-            break;
-            // result = await callLocalLLM(userInput,assitance);
-            break;
-      }
-
+      const result = await executeDecision(decision, userInput, conversationId);
       res.json({ message: result });
    } catch (error) {
       console.error(error);
