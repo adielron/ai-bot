@@ -122,5 +122,17 @@
   {
     "role": "assistant",
     "content": "Hello. I'm here, ready to assist. What do you need?"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello. How can I assist you today?"
   }
 ]
