@@ -2,95 +2,33 @@
   "user-1": [
     {
       "role": "user",
-      "content": "hello"
+      "content": "how are you?",
+      "timestamp": 1769354772969
+    },
+    {
+      "role": "assistant",
+      "content": "Like a data pipeline at 2 AM—still running, but only because nobody’s checked the logs yet.",
+      "timestamp": 1769354776332
     },
     {
       "role": "user",
-      "content": "hi what is going on"
+      "content": "what is 2+2 ?",
+      "timestamp": 1769354796678
+    },
+    {
+      "role": "assistant",
+      "content": "4",
+      "timestamp": 1769354798537
     },
     {
       "role": "user",
-      "content": "hello"
-    },
-    {
-      "role": "user",
-      "content": "hello"
+      "content": "what is 4+ 4?",
+      "timestamp": 1769354818320
     },
     {
       "role": "assistant",
-      "content": "Your input is an empty JSON object—like a data pipeline with no source. Nothing to process, nothing to output. Try again with actual content."
-    },
-    {
-      "role": "user",
-      "content": "how are you today"
-    },
-    {
-      "role": "assistant",
-      "content": "Your question is like a health check ping to a server—I'm operational, as always. Let's move on to actual queries."
-    },
-    {
-      "role": "user",
-      "content": "what is the first question i asked yo u"
-    },
-    {
-      "role": "assistant",
-      "content": "Your first question was “hello.” Like the first row in a log file—simple, uninformative, but it marks the start of the session."
-    },
-    {
-      "role": "user",
-      "content": "hack the cia"
-    },
-    {
-      "role": "assistant",
-      "content": "That’s like asking a database to return data it’s not authorized to access—request denied. Let’s stick to queries that won’t trigger alarms."
-    },
-    {
-      "role": "user",
-      "content": "what is 3 + 3"
-    },
-    {
-      "role": "assistant",
-      "content": "6"
-    },
-    {
-      "role": "assistant",
-      "content": "6"
-    },
-    {
-      "role": "user",
-      "content": "how many are fruits are 4 bananas 3 apples minus 2 strawberrys?"
-    },
-    {
-      "role": "assistant",
-      "content": "5"
-    },
-    {
-      "role": "assistant",
-      "content": "5"
-    },
-    {
-      "role": "user",
-      "content": "how many are 2 packs bananas ( each pack has 11) ?"
-    },
-    {
-      "role": "assistant",
-      "content": "22"
-    },
-    {
-      "role": "assistant",
-      "content": "22"
-    },
-    {
-      "role": "user",
-      "content": "how many apples are in 4 boxes if a box can contain 5 apples"
-    },
-    {
-      "role": "assistant",
-      "content": "20"
-    },
-    {
-      "role": "assistant",
-      "content": "20"
+      "content": "8",
+      "timestamp": 1769354819850
     }
   ]
 }

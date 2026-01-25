@@ -2,6 +2,7 @@
 export type ConversationHistory = {
    role: 'user' | 'assistant';
    content: string;
+   timestamp: number; // Date.now()
 };
 
 export type IntentDetectionResult =
@@ -18,3 +19,36 @@ export type IntentDetectionResult =
         confidence: number;
      }
    | { intent: 'chat'; parameters: {}; confidence: number };
+
+// shared/types.ts
+export type BaseEvent = {
+   eventType: string; // e.g. 'MathExpressionGenerated'
+   conversationId: string; // user/session id
+   timestamp: number; // milliseconds
+   payload: string; // service-specific data
+};
+
+export type PlanStepStatus = 'pending' | 'in_progress' | 'done';
+
+export type PlanStep = {
+   stepId: string;
+   service: string; // start simple
+   input: string;
+   status: PlanStepStatus;
+   result?: string;
+};
+
+export type ExecutionPlan = {
+   planId: string;
+   conversationId: string;
+   currentStepIndex: number;
+   status: 'running' | 'completed';
+   steps: PlanStep[];
+};
+
+export type CurrencyPayload = {
+   currency?: string;
+   currencyCode?: string;
+   from?: string;
+   to?: string;
+};

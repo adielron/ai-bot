@@ -25,6 +25,12 @@ Output:
 { "intent": "exchange", "parameters": { "from": "USD", "to": "ILS" }, "confidence": 0.9 }
 
 Input:
+{ "intent": "mathBot", "problemText": "If I have 5 apples, eat 2, and buy 10 more, how many do I have?", "confidence": 0.88 }
+Output:
+{ "intent": "mathBot", "parameters":{expression: "If I have 5 apples, eat 2, and buy 10 more, how many do I have?"}, "confidence": 0.88 }
+
+
+Input:
 { "intent": "math", "parameters": { "expr": "50 * 3 / 2" }, "confidence": 0.88 }
 Output:
 { "intent": "math", "parameters": { "expression": "50 * 3 / 2" }, "confidence": 0.88 }

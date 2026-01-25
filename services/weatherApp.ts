@@ -1,5 +1,6 @@
 import { Kafka } from 'kafkajs';
 import { getWeather } from '../packages/server/src/tools/weather';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'weather-app',
@@ -32,22 +33,34 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         const { city } = JSON.parse(message.value.toString());
+         let city: string;
+         try {
+            const event = JSON.parse(message.value.toString());
+            city = JSON.parse(event.payload).city;
+         } catch {
+            console.error(
+               '❌ Invalid weather request payload:',
+               message.value.toString()
+            );
+            return;
+         }
 
          const result = await fetchWeather(city);
 
+         // Wrap result as BaseEvent
+         const weatherEvent: BaseEvent = {
+            eventType: 'weatherResult',
+            conversationId: userId,
+            timestamp: Date.now(),
+            payload: result, // only string
+         };
+
          await producer.send({
-            topic: 'app-results',
-            messages: [
-               {
-                  key: userId,
-                  value: JSON.stringify({
-                     type: 'weather',
-                     result,
-                  }),
-               },
-            ],
+            topic: 'ToolInvocationResulted',
+            messages: [{ key: userId, value: JSON.stringify(weatherEvent) }],
          });
+
+         console.log(`🌦 Weather result sent for ${userId}: ${result}`);
       },
    });
 }

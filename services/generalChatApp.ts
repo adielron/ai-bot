@@ -1,6 +1,6 @@
 import { Kafka } from 'kafkajs';
 import { llmClient } from '../packages/server/llm/client';
-import { type ConversationHistory } from '../shared/types';
+import { type ConversationHistory, type BaseEvent } from '../shared/types';
 import persona from '../prompts/persona.txt';
 
 const kafka = new Kafka({
@@ -34,11 +34,10 @@ async function start() {
    await producer.connect();
    await consumer.connect();
 
-   // Subscribe to user input events and updates from memory
+   // Subscribe to user input events and conversation history updates
    await consumer.subscribe({ topic: 'intent-general-chat' });
    await consumer.subscribe({ topic: 'conversation-history-update' });
 
-   // Keep track of latest conversation history per user
    const historyCache = new Map<string, ConversationHistory[]>();
 
    console.log('🤖 GeneralChatApp is running');
@@ -50,15 +49,17 @@ async function start() {
 
          if (topic === 'conversation-history-update') {
             // Update cached conversation history
-            const history = JSON.parse(
-               message.value.toString()
-            ) as ConversationHistory[];
+            const event = JSON.parse(message.value.toString()) as BaseEvent;
+            if (!event.payload) return;
+
+            const history = JSON.parse(event.payload) as ConversationHistory[];
             historyCache.set(userId, history);
             return;
          }
 
          if (topic === 'intent-general-chat') {
-            const userInput = message.value.toString();
+            const event = JSON.parse(message.value.toString()) as BaseEvent;
+            const userInput = event.payload;
 
             // Build prompt using cached history
             const messages = buildChatPrompt(
@@ -76,18 +77,18 @@ async function start() {
 
             const result = response.text.trim();
 
-            // Publish result to app-results
+            // Wrap result as BaseEvent
+            const chatEvent: BaseEvent = {
+               eventType: 'chatResult',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: result, // only string
+            };
+
+            // Publish result to ToolInvocationResulted
             await producer.send({
-               topic: 'app-results',
-               messages: [
-                  {
-                     key: userId,
-                     value: JSON.stringify({
-                        type: 'chat',
-                        result,
-                     }),
-                  },
-               ],
+               topic: 'ToolInvocationResulted',
+               messages: [{ key: userId, value: JSON.stringify(chatEvent) }],
             });
          }
       },

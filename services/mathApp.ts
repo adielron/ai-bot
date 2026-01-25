@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'math-app',
@@ -38,45 +39,56 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         if (topic === 'intent-math') {
-            console.log(topic, message.value.toString());
-         } else if (topic === 'cot_math_expression_events') {
-            console.log(topic, message.value.toString());
-         }
-
-         // Determine which topic the message came from
-         let expression: string | undefined;
+         let event: BaseEvent;
 
          try {
-            const payload = JSON.parse(message.value.toString());
-            if ('expression' in payload) {
-               // From router intent-math
-               expression = payload.expression;
-            } else if (typeof payload === 'string') {
-               // From CoT service, raw string expression
-               expression = payload;
-            }
+            event = JSON.parse(message.value.toString()) as BaseEvent;
          } catch {
-            console.error('❌ Invalid math payload:', message.value.toString());
+            console.error(
+               '❌ Invalid BaseEvent payload:',
+               message.value.toString()
+            );
             return;
+         }
+
+         let expression: string | undefined;
+
+         // Determine expression based on topic
+         if (topic === 'intent-math') {
+            // Router / function router sends expression inside payload JSON
+            try {
+               const payload = JSON.parse(event.payload);
+               expression = payload.expression ?? '';
+            } catch {
+               console.error(
+                  '❌ Invalid payload for intent-math:',
+                  event.payload
+               );
+               return;
+            }
+         } else if (topic === 'cot_math_expression_events') {
+            // CoT Math service sends expression as payload string
+            expression = event.payload;
          }
 
          if (!expression) return;
 
          const result = safeEval(expression);
 
+         // Publish result as BaseEvent
+         const resultEvent: BaseEvent = {
+            eventType: 'mathResult',
+            conversationId: userId,
+            timestamp: Date.now(),
+            payload: result, // only string
+         };
+
          await producer.send({
-            topic: 'app-results',
-            messages: [
-               {
-                  key: userId,
-                  value: JSON.stringify({
-                     type: 'math',
-                     result,
-                  }),
-               },
-            ],
+            topic: 'ToolInvocationResulted',
+            messages: [{ key: userId, value: JSON.stringify(resultEvent) }],
          });
+
+         console.log(`🧮 Math result for ${userId}: ${result}`);
       },
    });
 }

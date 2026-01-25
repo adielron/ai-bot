@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'guardrail-service',
@@ -28,17 +29,29 @@ async function start() {
    await producer.connect();
    await consumer.connect();
 
-   // Choose which topic(s) to scan
    await consumer.subscribe({ topic: 'user-input-events' });
-   // await consumer.subscribe({ topic: 'llm_prompt_requests' });
 
    console.log('🛡️ Guardrail Service running');
 
    await consumer.run({
       eachMessage: async ({ message }) => {
          const userId = message.key?.toString();
-         const userInput = message.value?.toString();
-         if (!userId || !userInput) return;
+         if (!userId || !message.value) return;
+
+         // Parse incoming user input as BaseEvent
+         let event: BaseEvent;
+         try {
+            event = JSON.parse(message.value.toString());
+         } catch {
+            console.error(
+               '❌ Invalid BaseEvent received:',
+               message.value.toString()
+            );
+            return;
+         }
+
+         const userInput = event.payload;
+         if (!userInput) return;
 
          console.log(`Processing user input: ${userInput}`);
 
@@ -47,10 +60,19 @@ async function start() {
                `⚠️ Guardrail triggered for user ${userId}: ${userInput}`
             );
 
-            // Publish to guardrail_violation_events
+            // Publish as a BaseEvent
+            const guardrailEvent: BaseEvent = {
+               eventType: 'GuardrailViolation',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: userInput,
+            };
+
             await producer.send({
                topic: 'guardrail_violation_events',
-               messages: [{ key: userId, value: userInput }],
+               messages: [
+                  { key: userId, value: JSON.stringify(guardrailEvent) },
+               ],
             });
          }
       },

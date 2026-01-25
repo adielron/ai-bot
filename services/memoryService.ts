@@ -1,5 +1,5 @@
 import { Kafka } from 'kafkajs';
-import { type ConversationHistory } from '../shared/types';
+import { type ConversationHistory, type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'memory-service',
@@ -15,7 +15,6 @@ const HISTORY_FILE = 'data/history.json';
 const memory = new Map<string, ConversationHistory[]>();
 
 /* ---------------- File Persistence ---------------- */
-
 async function loadHistory() {
    try {
       const file = Bun.file(HISTORY_FILE);
@@ -40,7 +39,6 @@ async function saveHistory() {
 }
 
 /* ---------------- Helpers ---------------- */
-
 function appendMessage(userId: string, message: ConversationHistory) {
    const history = memory.get(userId) ?? [];
    history.push(message);
@@ -49,19 +47,20 @@ function appendMessage(userId: string, message: ConversationHistory) {
 }
 
 async function publishHistory(userId: string, history: ConversationHistory[]) {
+   const event: BaseEvent = {
+      eventType: 'ConversationHistoryUpdated',
+      conversationId: userId,
+      timestamp: Date.now(),
+      payload: JSON.stringify(history),
+   };
+
    await producer.send({
       topic: 'conversation-history-update',
-      messages: [
-         {
-            key: userId,
-            value: JSON.stringify(history),
-         },
-      ],
+      messages: [{ key: userId, value: JSON.stringify(event) }],
    });
 }
 
 /* ---------------- Main ---------------- */
-
 async function start() {
    await loadHistory();
 
@@ -69,7 +68,7 @@ async function start() {
    await consumer.connect();
 
    await consumer.subscribe({ topic: 'user-input-events' });
-   await consumer.subscribe({ topic: 'app-results' });
+   await consumer.subscribe({ topic: 'conversation-events' });
    await consumer.subscribe({ topic: 'user-control-events' });
 
    console.log('🧠 MemoryService is running');
@@ -79,49 +78,50 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         /* User input */
+         // Parse incoming message as BaseEvent
+         let event: BaseEvent;
+         try {
+            event = JSON.parse(message.value.toString());
+         } catch (err) {
+            console.error('❌ Invalid BaseEvent:', message.value.toString());
+            return;
+         }
+
          if (topic === 'user-input-events') {
-            const userInput = message.value.toString();
+            const userInput = event.payload;
 
             const history = appendMessage(userId, {
                role: 'user',
                content: userInput,
+               timestamp: Date.now(),
             });
 
             await saveHistory();
             await publishHistory(userId, history);
          }
 
-         /* App result */
-         if (topic === 'app-results') {
-            const { result } = JSON.parse(message.value.toString());
+         if (topic === 'conversation-events') {
+            console.log(event);
 
             const history = appendMessage(userId, {
                role: 'assistant',
-               content: result,
+               content: event.payload,
+               timestamp: Date.now(),
             });
 
             await saveHistory();
             await publishHistory(userId, history);
          }
 
-         /* Reset command */
          if (topic === 'user-control-events') {
-            const raw = message.value.toString();
-            console.log('command received:', raw);
+            const command = event.payload;
+            console.log('command received:', command);
 
-            try {
-               const parsed = JSON.parse(raw);
-               console.log('parsed command value:', parsed.command);
-
-               if (parsed.command === 'reset') {
-                  memory.set(userId, []);
-                  await saveHistory();
-                  await publishHistory(userId, []);
-                  console.log(`♻️ History reset for user ${userId}`);
-               }
-            } catch (err) {
-               console.error('Invalid control message:', raw);
+            if (command === '/reset') {
+               memory.set(userId, []);
+               await saveHistory();
+               await publishHistory(userId, []);
+               console.log(`♻️ History reset for user ${userId}`);
             }
          }
       },

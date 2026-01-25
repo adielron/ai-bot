@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs';
+import { type BaseEvent, type CurrencyPayload } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'exchange-app',
@@ -29,32 +30,54 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         console.log(message.value.toString());
+         let event: any;
+         try {
+            event = JSON.parse(message.value.toString());
+            console.log(event);
+         } catch {
+            // Send invalid JSON as BaseEvent
+            const errorEvent: BaseEvent = {
+               eventType: 'ExchangeAppError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: message.value.toString(), // raw string
+            };
 
-         const payload = JSON.parse(message.value.toString());
+            await producer.send({
+               topic: 'error_events',
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
+            });
+            return;
+         }
+
+         let parsedPayload: CurrencyPayload = {};
+         try {
+            parsedPayload = JSON.parse(event.payload) as CurrencyPayload;
+         } catch {
+            console.error('❌ Invalid CurrencyPayload JSON:', event.payload);
+         }
 
          const currency =
-            payload.currency ??
-            payload.currencyCode ??
-            payload.from ??
-            payload.to;
+            parsedPayload.currency ??
+            parsedPayload.currencyCode ??
+            parsedPayload.from ??
+            parsedPayload.to;
 
-         const rate = RATES[currency];
+         const rate = currency ? RATES[currency] : undefined;
          const result = rate
             ? `1 USD = ${rate} ${currency}`
             : `Unknown currency: ${currency}`;
 
+         event = {
+            eventType: 'exchangeResult',
+            conversationId: userId,
+            timestamp: Date.now(),
+            payload: result, // only string
+         };
+
          await producer.send({
-            topic: 'app-results',
-            messages: [
-               {
-                  key: userId,
-                  value: JSON.stringify({
-                     type: 'exchange',
-                     result,
-                  }),
-               },
-            ],
+            topic: 'ToolInvocationResulted',
+            messages: [{ key: userId, value: JSON.stringify(event) }],
          });
       },
    });

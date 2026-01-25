@@ -1,6 +1,6 @@
 import { Kafka } from 'kafkajs';
+import { type BaseEvent } from '../shared/types';
 
-// Initialize Kafka client
 const kafka = new Kafka({
    clientId: 'llm-json-parser',
    brokers: ['localhost:9092'],
@@ -21,58 +21,67 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         const rawText = message.value.toString();
-         let parsed: any;
+         // Parse incoming BaseEvent
+         const event = JSON.parse(message.value.toString()) as BaseEvent;
 
+         console.log(event);
+
+         // Parse payload (raw LLM JSON string)
+         let parsedPayload: any;
          try {
-            parsed = JSON.parse(rawText);
+            parsedPayload = JSON.parse(event.payload);
          } catch (err) {
-            console.error('❌ Invalid JSON from LLM:', rawText);
+            console.error('❌ Invalid JSON from LLM:', event.payload);
+
+            const errorEvent: BaseEvent = {
+               eventType: 'LLMJSONParseError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: event.payload, // <-- now just the raw string
+            };
 
             await producer.send({
                topic: 'error_events',
-               messages: [
-                  {
-                     key: userId,
-                     value: JSON.stringify({
-                        error: 'Invalid JSON',
-                        raw: rawText,
-                     }),
-                  },
-               ],
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
             });
             return;
          }
 
          // Validate required fields
-         console.log(parsed);
-
          if (
-            typeof parsed === 'object' &&
-            parsed !== null &&
-            'intent' in parsed &&
-            'parameters' in parsed &&
-            'confidence' in parsed
+            typeof parsedPayload === 'object' &&
+            parsedPayload !== null &&
+            'intent' in parsedPayload &&
+            'parameters' in parsedPayload &&
+            'confidence' in parsedPayload
          ) {
-            // Publish to function_execution_requests
+            // Wrap as BaseEvent for function_execution_requests
+            const funcExecEvent: BaseEvent = {
+               eventType: 'FunctionExecutionRequested',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: JSON.stringify(parsedPayload),
+            };
+
             await producer.send({
                topic: 'function_execution_requests',
-               messages: [{ key: userId, value: JSON.stringify(parsed) }],
+               messages: [
+                  { key: userId, value: JSON.stringify(funcExecEvent) },
+               ],
             });
          } else {
-            console.error('❌ JSON missing required fields:', parsed);
+            console.error('❌ JSON missing required fields:', parsedPayload);
+
+            const errorEvent: BaseEvent = {
+               eventType: 'LLMJSONParseError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: message.value.toString(), // <-- just the raw original value
+            };
 
             await producer.send({
                topic: 'error_events',
-               messages: [
-                  {
-                     key: userId,
-                     value: JSON.stringify({
-                        error: 'Missing fields',
-                        raw: parsed,
-                     }),
-                  },
-               ],
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
             });
          }
       },

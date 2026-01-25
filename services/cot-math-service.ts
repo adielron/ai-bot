@@ -1,6 +1,7 @@
 import { Kafka } from 'kafkajs';
 import { llmClient } from '../packages/server/llm/client';
 import cotPromptTemplate from '../prompts/cotPromptTemplate.txt';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'cot-math-service',
@@ -12,7 +13,7 @@ const producer = kafka.producer();
 async function start() {
    await consumer.connect();
    await producer.connect();
-   await consumer.subscribe({ topic: 'router_decision_events' });
+   await consumer.subscribe({ topic: 'intent-math-bot' });
 
    console.log('🧮 CoT Math Service running');
 
@@ -21,28 +22,55 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         const routerMsg = JSON.parse(message.value.toString());
-         if (routerMsg.intent !== 'math' || !routerMsg.parameters?.expression)
+         let event: BaseEvent;
+         try {
+            event = JSON.parse(message.value.toString()) as BaseEvent;
+            console.log(event);
+         } catch {
+            console.error(
+               '❌ Invalid router message:',
+               message.value.toString()
+            );
+            // Optionally, send to error_events as BaseEvent
+            const errorEvent: BaseEvent = {
+               eventType: 'CoTMathServiceError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: message.value.toString(), // raw string
+            };
+            await producer.send({
+               topic: 'error_events',
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
+            });
             return;
+         }
 
-         const problemText = routerMsg;
+         if (!event.payload) return;
 
-         console.log(problemText);
+         console.log('➡️ Math problem:', event.payload);
 
          // Call LLM for Chain-of-Thought
          const response = await llmClient.generateText({
-            prompt: problemText.parameters.expression,
+            prompt: event.payload,
             instructions: cotPromptTemplate,
             maxTokens: 100,
          });
 
          const mathExpression = response.text;
-
          console.log(`🧮 Math Expression: ${mathExpression}`);
+
+         // Wrap as BaseEvent
+         const mathEvent: BaseEvent = {
+            eventType: 'mathBotResult',
+            conversationId: userId,
+            timestamp: Date.now(),
+            payload: mathExpression, // only string
+         };
+
          // Publish clean math expression
          await producer.send({
-            topic: 'cot_math_expression_events',
-            messages: [{ key: userId, value: mathExpression }],
+            topic: 'ToolInvocationResulted',
+            messages: [{ key: userId, value: JSON.stringify(mathEvent) }],
          });
       },
    });

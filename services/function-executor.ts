@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'function-router',
@@ -20,32 +21,63 @@ async function start() {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         let payload;
+         let event: BaseEvent;
          try {
-            payload = JSON.parse(message.value.toString());
+            event = JSON.parse(message.value.toString()) as BaseEvent;
          } catch {
-            console.log('error');
+            console.error('❌ Invalid BaseEvent JSON');
 
-            // publish invalid JSON to error_events
+            const errorEvent: BaseEvent = {
+               eventType: 'FunctionRouterError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: message.value.toString(),
+            };
+
             await producer.send({
                topic: 'error_events',
-               messages: [{ key: userId, value: message.value }],
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
+            });
+            return;
+         }
+
+         // Parse the actual payload
+         let payload: string;
+         try {
+            payload = event.payload;
+         } catch {
+            console.error('❌ Invalid payload JSON');
+
+            const errorEvent: BaseEvent = {
+               eventType: 'FunctionRouterError',
+               conversationId: userId,
+               timestamp: Date.now(),
+               payload: event.payload,
+            };
+
+            await producer.send({
+               topic: 'error_events',
+               messages: [{ key: userId, value: JSON.stringify(errorEvent) }],
             });
             return;
          }
 
          console.log(payload);
 
-         const { intent, parameters } = payload;
-
+         const { intent, parameters } = JSON.parse(payload);
          let topic = '';
+
          switch (intent) {
             case 'weather':
                topic = 'intent-weather';
                break;
+            case 'mathBot':
+               topic = 'intent-math-bot';
+               break;
             case 'math':
                topic = 'intent-math';
                break;
+
             case 'exchange':
                topic = 'intent-exchange';
                break;
@@ -56,9 +88,16 @@ async function start() {
                topic = 'error_events';
          }
 
+         const routedEvent: BaseEvent = {
+            eventType: 'ToolInvocationRequested',
+            conversationId: userId,
+            timestamp: Date.now(),
+            payload: JSON.stringify(parameters),
+         };
+
          await producer.send({
             topic,
-            messages: [{ key: userId, value: JSON.stringify(parameters) }],
+            messages: [{ key: userId, value: JSON.stringify(routedEvent) }],
          });
       },
    });

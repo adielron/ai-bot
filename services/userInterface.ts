@@ -1,6 +1,6 @@
-import { log } from 'console';
 import { Kafka } from 'kafkajs';
 import readline from 'readline';
+import { type BaseEvent } from '../shared/types';
 
 const kafka = new Kafka({
    clientId: 'user-interface',
@@ -40,20 +40,33 @@ async function start() {
       guardrailFired = false;
 
       if (userInput.toLowerCase() === '/reset') {
-         log('Reset command issued by user.');
+         console.log('Reset command issued by user.');
+
+         const resetEvent: BaseEvent = {
+            eventType: 'UserControlCommand',
+            conversationId: USER_ID,
+            timestamp: Date.now(),
+            payload: '/reset',
+         };
+
          await producer.send({
             topic: 'user-control-events',
-            messages: [
-               { key: USER_ID, value: JSON.stringify({ command: 'reset' }) },
-            ],
+            messages: [{ key: USER_ID, value: JSON.stringify(resetEvent) }],
          });
          rl.prompt();
          return;
       }
 
+      const userEvent: BaseEvent = {
+         eventType: 'UserMessageReceived',
+         conversationId: USER_ID,
+         timestamp: Date.now(),
+         payload: userInput,
+      };
+
       await producer.send({
          topic: 'user-input-events',
-         messages: [{ key: USER_ID, value: userInput }],
+         messages: [{ key: USER_ID, value: JSON.stringify(userEvent) }],
       });
    });
 
@@ -79,10 +92,9 @@ async function start() {
                return;
             }
 
-            const parsed = JSON.parse(message.value.toString()) as {
-               message: string;
-            };
-            console.log(`\n🤖 ${parsed.message}`);
+            const parsed = JSON.parse(message.value.toString()) as BaseEvent;
+
+            console.log(`\n ${parsed.payload}`);
             rl.prompt();
          }
       },
