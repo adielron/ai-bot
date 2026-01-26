@@ -154,6 +154,26 @@ async function handleAppResult(event: BaseEvent) {
    }
 }
 
+//  duplication handling -------------
+
+function handleDuplicateCommand(event: BaseEvent): boolean {
+   const plan = plans.get(event.conversationId);
+   if (!plan) {
+      console.warn(
+         '⚠️ No active plan found for conversation',
+         event.conversationId
+      );
+      return false;
+   }
+
+   console.log('♻️ Duplicate UserMessage ignored', {
+      conversationId: event.conversationId,
+      planId: plan.planId,
+      status: plan.status,
+   });
+   return true;
+}
+
 /* ---------------- Final Response ---------------- */
 
 // async function emitFinalResponse(plan: ExecutionPlan) {
@@ -204,6 +224,9 @@ async function start() {
          });
 
          if (event.eventType === 'UserMessageReceived') {
+            if (handleDuplicateCommand(event)) {
+               return;
+            }
             await handleUserInput(event);
          }
 
