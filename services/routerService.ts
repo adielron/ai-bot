@@ -10,7 +10,7 @@ const kafka = new Kafka({
    brokers: ['localhost:9092'],
 });
 
-const consumer = kafka.consumer({ groupId: 'router-service-group' });
+const consumer = kafka.consumer({ groupId: 'router-service-group-1' });
 const producer = kafka.producer();
 
 // Cache latest conversation history per user

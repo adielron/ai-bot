@@ -1,0 +1,7 @@
+Product: BrewMaster Y (Coffee Machine)
+Operating Instructions:
+1. Water Tank: The removable tank holds 1.5 liters. Always use filtered water to prevent descaling issues.
+2. Brewing: Use the "Intense" setting for espresso shots and "Smooth" for Americano. 
+3. Maintenance: The "Clean" light will flash orange every 200 cycles. To clean, insert the BrewMaster cleaning tablet into the pod slot and run a long cycle without coffee.
+Temperature Control: The machine maintains a constant 92°C (197.6°F) for optimal extraction.
+Troubleshooting: If the red light stays on, the pressure valve is stuck. Turn off the machine for 10 minutes.
