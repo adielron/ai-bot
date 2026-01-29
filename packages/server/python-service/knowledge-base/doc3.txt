@@ -1,0 +1,7 @@
+Product: VoltDrive Z (Electric Vehicle)
+Performance:
+The VoltDrive Z is a dual-motor AWD electric sedan. It achieves 0-60 mph in 3.2 seconds.
+Range: The 95kWh battery pack provides an EPA-estimated range of 410 miles.
+Charging: Supports Ultra-Fast DC charging up to 250kW. A 15-minute charge provides roughly 200 miles of range.
+Autonomous Features: Includes the "Guardian 2.0" suite, which provides lane-keep assist, emergency braking, and a 360-degree holographic parking view.
+Interior: Features vegan leather seating and a 19-inch central touch console.

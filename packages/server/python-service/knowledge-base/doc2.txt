@@ -1,0 +1,7 @@
+Product: EvoPhone X (Smartphone)
+Technical Specifications:
+The EvoPhone X features a 6.7-inch Super AMOLED display with a 120Hz refresh rate. It is powered by the Titan-9 Octa-core processor. 
+Battery & Charging: It contains a 5200mAh battery. Unique Feature: The back panel is made of photovoltaic glass, allowing for "Solar-Trickle Charging" which adds 5% battery life per hour in direct sunlight.
+Camera: Triple-lens setup with a 108MP main sensor, 12MP ultra-wide, and a 5MP macro lens.
+Internal Storage: Available in 256GB and 512GB variants. No SD card slot.
+Price: $1,200.00 USD.

@@ -5,20 +5,25 @@ const client = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,
 });
 
-export type RouteDecision = {
-   intent: 'weather' | 'math' | 'exchange' | 'chat' | 'analyzeReview';
+export interface ToolStep {
+   tool: string;
    parameters: Record<string, any>;
-   confidence: number;
-};
+}
+
+export interface RouteDecision {
+   plan: ToolStep[];
+   final_answer_synthesis_required: boolean;
+}
 
 export async function routeUserIntent(
    userInput: string
 ): Promise<RouteDecision> {
-   const response = await client.responses.create({
+   const response = await client.chat.completions.create({
+      // Fixed: changed to standard chat.completions
       model: 'gpt-4o-mini',
       temperature: 0,
-      max_output_tokens: 150,
-      input: [
+      max_tokens: 500, // Increased to allow for complex multi-step plans
+      messages: [
          {
             role: 'system',
             content: classifier,
@@ -28,15 +33,26 @@ export async function routeUserIntent(
             content: userInput,
          },
       ],
+      response_format: { type: 'json_object' }, // Forces OpenAI to return valid JSON
    });
 
+   const content = response.choices[0]?.message.content || '{}';
+
    try {
-      return JSON.parse(response.output_text) as RouteDecision;
-   } catch {
+      const parsed = JSON.parse(content);
+
+      // Basic validation to ensure the plan exists
+      if (!parsed.plan || !Array.isArray(parsed.plan)) {
+         throw new Error('Invalid plan format');
+      }
+
+      return parsed as RouteDecision;
+   } catch (error) {
+      console.error('❌ Router Parsing Error:', error);
+      // Fallback: Default to a simple chat plan if the LLM fails
       return {
-         intent: 'chat',
-         parameters: {},
-         confidence: 0,
+         plan: [{ tool: 'chat', parameters: {} }],
+         final_answer_synthesis_required: false,
       };
    }
 }

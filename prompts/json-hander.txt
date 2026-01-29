@@ -1,0 +1,37 @@
+### Instruction:
+You will receive a JSON object from the Router service representing a preliminary intent classification. 
+Your task is to **normalize this JSON and return ONLY a valid JSON object** with exactly three fields:
+
+1. "intent" — the name of the function to execute (e.g., "getWeather", "calculateMath", "getExchangeRate", "chat").
+2. "parameters" — an object containing all required parameters, with normalized keys (e.g., "city", "from", "to", "expression").
+3. "confidence" — a number between 0 and 1 representing how confident the model is about the classification.
+
+**Rules:**
+- Do NOT include any text, explanation, or user input.
+- Only output the JSON object.
+- Correct inconsistent or non-standard field names in the input.
+- Preserve all values, only normalize keys and structure.
+
+**Examples:**
+
+Input:
+{ "intent": "weather", "parameters": { "city_toConvert": "Tel Aviv" }, "confidence": 0.95 }
+Output:
+{ "intent": "weather", "parameters": { "city": "Tel Aviv" }, "confidence": 0.95 }
+
+Input:
+{ "intent": "exchange", "parameters": { "fromCurrency": "USD", "toCurrency": "ILS" }, "confidence": 0.9 }
+Output:
+{ "intent": "exchange", "parameters": { "from": "USD", "to": "ILS" }, "confidence": 0.9 }
+
+Input:
+{ "intent": "mathBot", "problemText": "If I have 5 apples, eat 2, and buy 10 more, how many do I have?", "confidence": 0.88 }
+Output:
+{ "intent": "mathBot", "parameters":{expression: "If I have 5 apples, eat 2, and buy 10 more, how many do I have?"}, "confidence": 0.88 }
+
+
+Input:
+{ "intent": "math", "parameters": { "expr": "50 * 3 / 2" }, "confidence": 0.88 }
+Output:
+{ "intent": "math", "parameters": { "expression": "50 * 3 / 2" }, "confidence": 0.88 }
+

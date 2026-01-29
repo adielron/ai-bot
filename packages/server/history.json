@@ -122,5 +122,153 @@
   {
     "role": "assistant",
     "content": "Hello. I'm here, ready to assist. What do you need?"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Assistant: Hello. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "HELLO"
+  },
+  {
+    "role": "user",
+    "content": "HELLO"
+  },
+  {
+    "role": "assistant",
+    "content": "Assistant: Hello. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of an iphone 16?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of an iphone 16?"
+  },
+  {
+    "role": "assistant",
+    "content": "I can't provide real-time pricing. Check a reliable retailer for the latest."
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "user",
+    "content": "hello"
+  },
+  {
+    "role": "assistant",
+    "content": "Assistant: Hello. How can I assist you today?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ?"
+  },
+  {
+    "role": "user",
+    "content": "What is the AquaPure Mini (Water Purifier)?"
+  },
+  {
+    "role": "user",
+    "content": "What is the AquaPure Mini (Water Purifier)?"
+  },
+  {
+    "role": "user",
+    "content": "VoltDrive Z (Electric Vehicle) what is that ?"
+  },
+  {
+    "role": "user",
+    "content": "VoltDrive Z (Electric Vehicle) what is that ?"
+  },
+  {
+    "role": "user",
+    "content": "What is the AquaPure Mini (Water Purifier)?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ? also what is the exchange for 1 usd to ils ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ? also what is the exchange for 1 usd to ils ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ? also what is the exchange for 1 usd to ils ?"
+  },
+  {
+    "role": "user",
+    "content": "what is the price of EvoPhone X (Smartphone) ? also what is the exchange for 1 usd to ils ?"
   }
 ]

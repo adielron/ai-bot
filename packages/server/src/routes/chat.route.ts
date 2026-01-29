@@ -1,16 +1,6 @@
-import express, { raw } from 'express';
+import express from 'express';
 import z from 'zod';
-import { routeUserIntent, type RouteDecision } from '../agent/router.agent';
-import { getWeather } from '../tools/weather';
-import { calculateMath } from '../tools/math';
-import { getExchangeRate } from '../tools/exchange';
 import { addMessage } from '../../src/memory/chat.memory';
-import { analyzeReview } from '../tools/analyzeReview';
-import { callLocalLLM } from '../../llm/ollama.client';
-import { analyzeWithPython } from '../../llm/bert.python';
-import OneShotClassification from '../../prompts/oneShotClassifier.txt';
-import assitance from '../../prompts/ollamaAsistace.txt';
-import { chatService } from '../../services/chat.service';
 import { decideIntent } from '../agent/router.agent.decision';
 import { executeDecision } from '../../services/execution.service';
 
@@ -25,6 +15,7 @@ type AgentRequest = z.infer<typeof agentRequestSchema>;
 
 // POST /api/agent
 router.post('/api/agent', async (req, res) => {
+   const start = performance.now();
    const parseResult = agentRequestSchema.safeParse(req.body);
    if (!parseResult.success) {
       return res.status(400).json({ errors: parseResult.error.format() });
@@ -35,9 +26,12 @@ router.post('/api/agent', async (req, res) => {
    try {
       addMessage({ role: 'user', content: userInput });
       const decision = await decideIntent(userInput);
+      console.log('Decision:', JSON.stringify(decision, null, 2));
 
       const result = await executeDecision(decision, userInput, conversationId);
       res.json({ message: result });
+      const end = performance.now();
+      console.log(`⏱️ Agent processing took ${end - start} milliseconds.`);
    } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Failed to process user input' });
