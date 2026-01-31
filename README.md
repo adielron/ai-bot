@@ -1,16 +1,31 @@
-# my-app
+# Event-Driven Architecture using Kafka
+
+This allows the Hybrid Agent to be highly scalable and resilient—if the Python AI service is busy, the messages stay queued in Kafka rather than crashing the system. I used Docker Compose to manage the infrastructure, ensuring a consistent environment for the brokers and zookeepers.
+
 
 To install dependencies:
 
 ```bash
 bun install
+
 ```
 
 To run:
 
 ```bash
-bun run index.ts
+docker compose up -d
 ```
+Open a new terminal for each of these (or run them in the background). These services listen to the message bus to process product data in real-time.
+
+# Terminal A: Consumer Service
+``
+bun run services/consumer.ts
+``
+# Terminal B: Producer/Inventory Service
+``
+bun run services/producer.ts
+``
+#......
 
 This project was created using `bun init` in bun v1.3.3. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
 
