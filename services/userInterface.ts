@@ -65,7 +65,7 @@ async function start() {
       };
 
       await producer.send({
-         topic: 'user-input-events',
+         topic: 'user-input-event',
          messages: [{ key: USER_ID, value: JSON.stringify(userEvent) }],
       });
    });

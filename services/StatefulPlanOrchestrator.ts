@@ -1,6 +1,7 @@
 import { Kafka } from 'kafkajs';
 import { randomUUID } from 'crypto';
 import { type ExecutionPlan, type BaseEvent } from '../shared/types';
+import { log } from 'console';
 
 const kafka = new Kafka({
    clientId: 'plan-orchestrator',
@@ -207,7 +208,7 @@ async function start() {
    await producer.connect();
    await consumer.connect();
 
-   await consumer.subscribe({ topic: 'user-input-events' });
+   await consumer.subscribe({ topic: 'user-input-event' });
    await consumer.subscribe({ topic: 'conversation-events' });
 
    console.log('🧭 Plan Orchestrator is running');
@@ -217,6 +218,8 @@ async function start() {
          if (!message.value) return;
 
          const event = JSON.parse(message.value.toString()) as BaseEvent;
+
+         log('message.value.toString():', message.value.toString());
 
          console.log('📨 Kafka event received:', {
             eventType: event.eventType,

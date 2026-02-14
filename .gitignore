@@ -32,3 +32,22 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+
+
+# Python environment
+venv/
+.venv/
+env/
+bin/
+lib/
+share/
+pyvenv.cfg
+
+# Docker & Flink temporary files
+.docker/
+target/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
