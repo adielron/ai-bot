@@ -1,33 +1,50 @@
-# Event-Driven Architecture using Kafka
+🛠️ Execution Instructions
+        To run the complete pipeline, follow these steps in order. Ensure you have your Google Cloud credentials (service-account-key.json) in the project root.
 
-This allows the Hybrid Agent to be highly scalable and resilient—if the Python AI service is busy, the messages stay queued in Kafka rather than crashing the system. I used Docker Compose to manage the infrastructure, ensuring a consistent environment for the brokers and zookeepers.
+        1. Start Infrastructure
+        Launch the Kafka brokers, Zookeeper, and Flink JobManager/TaskManager:
+
+        Bash
+        docker compose up -d
+
+2.       the Backend Services (Node.js/Bun)
+        Open two separate terminals for the agent logic:
+
+        Terminal A: Agent Orchestrator (Listens to Kafka and manages the plan):
+
+        Bash
+        bun run services/consumer.ts
+        Terminal B: Input Producer (Simulates user messages into the user-input-event topic):
+
+        Bash
+        bun run services/producer.ts
 
 
-To install dependencies:
+3.      Start the Stream Processor (PyFlink & BigQuery)
+        This service performs the real-time sentiment analysis and streams data to BigQuery.
 
-```bash
-bun install
+        Terminal C: Flink SQL & Python UDF:
 
-```
+        Bash
+        # Ensure you are in your virtual environment if applicable
+        python services/flink_processor.py
 
-To run:
 
-```bash
-docker compose up -d
-```
-Open a new terminal for each of these (or run them in the background). These services listen to the message bus to process product data in real-time.
+📊 Performance BenchmarkingScenarioModelAvg Latency (ms)Throughput (Events/sec)Precision (1-5)CostRouter (Plan Gen)Llama3 (8B)250–400 ms~3–54$0Router (Fallback)GPT-3.5600–900 ms~1–25$OrchestratorNode/TS10–30 ms~500N/A$0RAG RetrievalHF Embeddings120–250 ms~10–155$0BigQuery IngestionPyFlink Sink~50 ms300+N/A$
 
-# Terminal A: Consumer Service
-``
-bun run services/consumer.ts
-``
-# Terminal B: Producer/Inventory Service
-``
-bun run services/producer.ts
-``
-#......
+🏗️ Data Architecture & Medallion Flow
+Kafka (Bronze): Acts as the immutable Event Store.
 
-This project was created using `bun init` in bun v1.3.3. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+Flink (Silver): Enriches data with AI Sentiment and structural normalization.
+
+BigQuery (Gold): Stores the final, queryable insights for BI and Audit.
+
+🛡️ Security & Git
+The project is configured to ignore sensitive artifacts:
+
+*.jar: Compiled Flink/Java binaries.
+
+*.json: GCP Credentials (excluding history.json via the !history.json exception)
 
 
 טבלת הערכת ביצועים  
@@ -63,3 +80,4 @@ CQRS ו-Idempotency
 
 סיכום קצר
 באופן כללי, הארכיטקטורה עמידה, מאפשרת שחזור, ומאוד מתאימה למערכות מבוזרות ואסינכרוניות עם הרבה Workers ו-Tools.
+
