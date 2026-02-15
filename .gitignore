@@ -51,3 +51,6 @@ __pycache__/
 
 # Logs
 *.log
+
+*.jar
+*-key.json
