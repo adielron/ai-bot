@@ -1,0 +1,27 @@
+Country: Israel
+Weather Summary:
+- January: Average low 9°C, average high 18°C, light winter rains.
+- April: Mild spring weather with average temperatures between 14°C and 24°C.
+- July: Hot summer peak with average high 33°C and low 24°C.
+- October: Warm fall with average highs near 28°C and clear skies.
+Economic Notes:
+- Local SIM card price: 70 ILS.
+- Average hotel room: 250 ILS per night.
+- Typical coffee price in Tel Aviv: 18-25 ILS.
+Seasonal Advice:
+- Products with temperature-sensitive batteries should be stored indoors during July.
+- In winter months, expect rain and slightly lower solar charging efficiency for outdoor devices.
+
+Country: Germany
+Weather Summary:
+- January: Cold winter with averages around -1°C to 4°C and snowfall in the south.
+- May: Pleasant spring weather 10°C to 20°C with moderate rainfall.
+- August: Warm summer month with averages of 18°C to 26°C.
+- December: Cool and damp, with occasional frost and festive markets.
+Economic Notes:
+- Typical smartphone price range: 800-1,200 EUR.
+- Monthly public transit pass: 70-100 EUR in major cities.
+- Average dinner cost: 20-35 EUR.
+Seasonal Advice:
+- EV range can drop by 10-20% in December due to colder temperatures.
+- Devices rated for 55°C operation work well through German summers.

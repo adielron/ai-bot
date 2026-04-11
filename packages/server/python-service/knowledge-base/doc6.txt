@@ -1,0 +1,27 @@
+Country: United States
+Weather Summary:
+- February: Cool winter with average lows of 1°C and highs of 12°C in the Northeast; mild conditions in the South.
+- June: Early summer averages of 20°C to 30°C in many regions.
+- September: Warm late summer with average highs of 22°C to 31°C and lower humidity in the West.
+- November: Transition to cooler weather, with lows near 5°C in northern states.
+Price Notes:
+- Mid-range smartphone price: $300-$600 USD.
+- Coffee price in major cities: $4-$6 USD.
+- Average monthly rent for a one-bedroom apartment: $1,200-$2,500 USD depending on city.
+Seasonal Advice:
+- Battery-powered tools and devices should avoid sustained temperatures above 40°C in summer.
+- Humidity-sensitive appliances perform better indoors during monsoon-like summer conditions in the Southeast.
+
+Country: Japan
+Weather Summary:
+- March: Cherry blossom season with temperatures around 8°C to 16°C.
+- June: Rainy season with high humidity and temperatures of 20°C to 25°C.
+- August: Hot summer with 28°C to 34°C and high humidity.
+- December: Cool and dry with average temperatures of 3°C to 12°C.
+Price Notes:
+- Average gasoline price: 180-190 JPY per liter.
+- Smartphone price range: 85,000-120,000 JPY.
+- Average lunch price in Tokyo: 800-1,200 JPY.
+Seasonal Advice:
+- Products shipped to Japan should be rated for humid summer conditions and mild winter cold.
+- Outdoor gear is best used in spring and autumn for comfort.

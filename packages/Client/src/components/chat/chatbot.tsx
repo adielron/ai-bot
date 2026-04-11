@@ -29,21 +29,32 @@ const chatbot = () => {
    const onSumbit = async ({ prompt }: ChatFormData) => {
       try {
          setError('');
+         console.log('🚀 [CLIENT] Sending user message:', prompt);
          setMessages((prev) => [...prev, { content: prompt, role: 'user' }]);
          setbotTyping(true);
          popAudio.play();
+         console.log(
+            '⏳ [CLIENT] Request sent to /api/agent, waiting for response...'
+         );
+         const startTime = performance.now();
          const { data } = await axios.post<chatResponse>('/api/agent', {
             prompt,
             conversationId: conversationId.current,
          });
+         const endTime = performance.now();
+         console.log(
+            `✅ [CLIENT] Response received in ${(endTime - startTime).toFixed(2)}ms:`,
+            data.message.substring(0, 100) + '...'
+         );
          setMessages((prev) => [
             ...prev,
             { content: data.message, role: 'bot' },
          ]);
          notifAudio.play();
          setbotTyping(false);
+         console.log('🎉 [CLIENT] Message processing complete.');
       } catch (error) {
-         console.error(error);
+         console.error('❌ [CLIENT] Error occurred:', error);
          setError('An error occurred. Please try again.');
       } finally {
          setbotTyping(false);

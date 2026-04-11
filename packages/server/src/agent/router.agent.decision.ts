@@ -5,11 +5,24 @@ import { type RouteDecision, type ToolStep } from './router.agent';
  * Main entry point: Tries local Ollama first, falls back to OpenAI
  */
 export async function decideIntent(userInput: string): Promise<RouteDecision> {
+   console.log(
+      '🔍 [ROUTER] Starting intent classification for input:',
+      userInput.substring(0, 50) + '...'
+   );
    // 1. Await the response from the LLM agent
    const rawDecision = await routeUserIntent(userInput);
+   console.log(
+      '📋 [ROUTER] Raw decision received:',
+      JSON.stringify(rawDecision, null, 2)
+   );
 
    // 2. Pass the resolved data (not the Promise) to normalizePlan
-   return normalizePlan(rawDecision);
+   const normalized = normalizePlan(rawDecision);
+   console.log(
+      '✅ [ROUTER] Normalized plan:',
+      JSON.stringify(normalized, null, 2)
+   );
+   return normalized;
 }
 
 /**

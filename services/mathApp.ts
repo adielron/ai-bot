@@ -1,5 +1,7 @@
 import { Kafka } from 'kafkajs';
 import { type BaseEvent } from '../shared/types';
+import { answerWithMathLLM } from './llmService';
+import { addContextEntry } from './conversationContext';
 
 const kafka = new Kafka({
    clientId: 'math-app',
@@ -11,16 +13,25 @@ const producer = kafka.producer();
 
 function safeEval(expression: string): string {
    try {
-      // Allow only numbers, parentheses, and math operators
-      if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+      const trimmed = expression.trim();
+
+      // Reject empty expressions before attempting eval
+      if (!trimmed || trimmed === '') {
+         return 'ERROR: Empty math expression. Cannot evaluate.';
+      }
+
+      // Remove additional spaces and validate basic math characters
+      const sanitized = trimmed.replace(/\s+/g, '');
+      if (!/^[0-9+\-*/().]+$/.test(sanitized)) {
          return 'Invalid math expression';
       }
 
       // eslint-disable-next-line no-eval
-      const result = eval(expression);
+      const result = eval(sanitized);
       return String(result);
-   } catch {
-      return 'Math error';
+   } catch (err) {
+      console.error('Math evaluation error:', err);
+      return 'Math error: ' + String(err).substring(0, 50);
    }
 }
 
@@ -28,67 +39,64 @@ async function start() {
    await producer.connect();
    await consumer.connect();
 
-   // Subscribe to both original math intent and CoT expression events
-   await consumer.subscribe({ topic: 'intent-math' });
-   await consumer.subscribe({ topic: 'cot_math_expression_events' });
+   await consumer.subscribe({ topic: 'intent-math', fromBeginning: true });
 
-   console.log('🔢 MathApp is running');
+   console.log('🔢 MathApp is running and listening to intent-math...');
 
    await consumer.run({
-      eachMessage: async ({ message, topic }) => {
+      eachMessage: async ({ message }) => {
          const userId = message.key?.toString();
          if (!userId || !message.value) return;
 
-         let event: BaseEvent;
+         console.log(`\n📥 [MathApp] Received message for user: ${userId}`);
 
+         let expression = '';
+         let query = '';
          try {
-            event = JSON.parse(message.value.toString()) as BaseEvent;
-         } catch {
-            console.error(
-               '❌ Invalid BaseEvent payload:',
-               message.value.toString()
-            );
+            const event = JSON.parse(message.value.toString()) as BaseEvent;
+
+            try {
+               const nestedPayload = JSON.parse(event.payload);
+               expression = nestedPayload.expression || event.payload;
+               query = nestedPayload.query || '';
+            } catch {
+               expression = event.payload;
+            }
+         } catch (err) {
+            console.error('❌ [MathApp] Critical JSON parse error:', err);
             return;
          }
 
-         let expression: string | undefined;
-
-         // Determine expression based on topic
-         if (topic === 'intent-math') {
-            // Router / function router sends expression inside payload JSON
-            try {
-               const payload = JSON.parse(event.payload);
-               expression = payload.expression ?? '';
-            } catch {
-               console.error(
-                  '❌ Invalid payload for intent-math:',
-                  event.payload
-               );
-               return;
-            }
-         } else if (topic === 'cot_math_expression_events') {
-            // CoT Math service sends expression as payload string
-            expression = event.payload;
+         if (!expression || typeof expression !== 'string') {
+            console.error(`❌ [MathApp] No valid expression found!`);
+            return;
          }
 
-         if (!expression) return;
+         console.log(`🧮 [MathApp] Evaluating: "${expression.trim()}"`);
+         const result = safeEval(expression.trim());
+         console.log(`✅ [MathApp] Result: ${result}`);
 
-         const result = safeEval(expression);
+         // Use LLM to provide a friendly answer with explanation
+         const finalAnswer = await answerWithMathLLM(
+            query || expression,
+            result
+         );
 
-         // Publish result as BaseEvent
+         // Store in conversation context for inter-tool communication
+         addContextEntry(userId, 'math', query || expression, finalAnswer);
+
          const resultEvent: BaseEvent = {
             eventType: 'mathResult',
             conversationId: userId,
             timestamp: Date.now(),
-            payload: result, // only string
+            payload: finalAnswer,
          };
 
+         console.log(`📤 [MathApp] Sending result to conversation-events`);
          await producer.send({
-            topic: 'ToolInvocationResulted',
+            topic: 'conversation-events',
             messages: [{ key: userId, value: JSON.stringify(resultEvent) }],
          });
-
-         console.log(`🧮 Math result for ${userId}: ${result}`);
       },
    });
 }

@@ -1,29 +1,29 @@
 import { Kafka } from 'kafkajs';
-import readline from 'readline';
+import { createInterface } from 'readline';
 import { type BaseEvent } from '../shared/types';
+import { randomUUID } from 'crypto';
 
 const kafka = new Kafka({
    clientId: 'user-interface',
-   brokers: ['localhost:9092'], // make sure this matches your setup
+   brokers: ['localhost:9092'],
 });
 
-const consumer = kafka.consumer({ groupId: 'user-interface-group' });
-const producer = kafka.producer();
+const USER_ID = randomUUID();
 
-const USER_ID = 'user-1';
+// Each user interface instance gets its own consumer group so they don't compete for partitions
+const consumer = kafka.consumer({ groupId: `user-interface-group-${USER_ID}` });
+const producer = kafka.producer();
 
 async function start() {
    await producer.connect();
    await consumer.connect();
 
    await consumer.subscribe({ topic: 'bot-responses' });
-   await consumer.subscribe({ topic: 'guardrail_violation_events' });
 
    console.log('💬 Chat started. Type your message:');
-   console.log('Type /reset to clear conversation history\n');
+   console.log('Type /exit to quit\n');
 
-   // ----------------- Setup readline -----------------
-   const rl = readline.createInterface({
+   const rl = createInterface({
       input: process.stdin,
       output: process.stdout,
       prompt: 'You: ',
@@ -31,72 +31,40 @@ async function start() {
 
    rl.prompt();
 
-   let guardrailFired = false; // tracks only the current input
-
    rl.on('line', async (line) => {
-      const userInput = line.trim();
-      if (!userInput) return rl.prompt();
-
-      guardrailFired = false;
-
-      if (userInput.toLowerCase() === '/reset') {
-         console.log('Reset command issued by user.');
-
-         const resetEvent: BaseEvent = {
-            eventType: 'UserControlCommand',
-            conversationId: USER_ID,
-            timestamp: Date.now(),
-            payload: '/reset',
-         };
-
-         await producer.send({
-            topic: 'user-control-events',
-            messages: [{ key: USER_ID, value: JSON.stringify(resetEvent) }],
-         });
-         rl.prompt();
-         return;
+      const text = line.trim();
+      if (!text) return rl.prompt();
+      if (text.toLowerCase() === '/exit') {
+         console.log('Bye!');
+         process.exit(0);
       }
 
       const userEvent: BaseEvent = {
          eventType: 'UserMessageReceived',
          conversationId: USER_ID,
          timestamp: Date.now(),
-         payload: userInput,
+         payload: text,
       };
 
+      console.log('➡️ Sending user input to orchestrator:', text);
       await producer.send({
          topic: 'user-input-event',
          messages: [{ key: USER_ID, value: JSON.stringify(userEvent) }],
       });
+
+      rl.prompt();
    });
 
-   // ----------------- Kafka consumer -----------------
-
    await consumer.run({
-      eachMessage: async ({ topic, message }) => {
+      eachMessage: async ({ message }) => {
          const userId = message.key?.toString();
          if (userId !== USER_ID || !message.value) return;
 
-         if (topic === 'guardrail_violation_events') {
-            guardrailFired = true;
-            console.log(
-               `\n🤖 I cannot process this request: due to safety protocols.`
-            );
-            rl.prompt();
-            return;
-         }
+         const event = JSON.parse(message.value.toString()) as BaseEvent;
+         if (event.eventType !== 'BotResponse') return;
 
-         if (topic === 'bot-responses') {
-            if (guardrailFired) {
-               // Ignore normal bot response if guardrail fired
-               return;
-            }
-
-            const parsed = JSON.parse(message.value.toString()) as BaseEvent;
-
-            console.log(`\n ${parsed.payload}`);
-            rl.prompt();
-         }
+         console.log(`\n🤖 ${event.payload}`);
+         rl.prompt();
       },
    });
 }

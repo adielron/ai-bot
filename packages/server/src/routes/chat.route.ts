@@ -15,25 +15,69 @@ type AgentRequest = z.infer<typeof agentRequestSchema>;
 
 // POST /api/agent
 router.post('/api/agent', async (req, res) => {
-   const start = performance.now();
+   const requestStart = performance.now();
+   console.log(
+      '📨 [API] Received /api/agent request with prompt:',
+      req.body.prompt?.substring(0, 50) + '...'
+   );
    const parseResult = agentRequestSchema.safeParse(req.body);
    if (!parseResult.success) {
+      console.error('❌ [API] Validation failed:', parseResult.error.format());
       return res.status(400).json({ errors: parseResult.error.format() });
    }
    const { prompt: userInput, conversationId } =
       parseResult.data as AgentRequest;
 
    try {
+      const processingStart = performance.now();
+      console.log('💬 [API] Added user message to memory.');
       addMessage({ role: 'user', content: userInput });
-      const decision = await decideIntent(userInput);
-      console.log('Decision:', JSON.stringify(decision, null, 2));
 
+      // 1. Check what the Router decided
+      console.log('🔀 [API] Calling router for intent classification...');
+      const decision = await decideIntent(userInput);
+      console.log(
+         '📂 [API] Router decision:',
+         JSON.stringify(decision.plan, null, 2)
+      );
+      console.log(
+         '🤖 [API] Synthesis Required:',
+         decision.final_answer_synthesis_required
+      );
+
+      // 2. Check the results from the tools
+      console.log('⚙️ [API] Starting tool execution...');
       const result = await executeDecision(decision, userInput, conversationId);
-      res.json({ message: result });
-      const end = performance.now();
-      console.log(`⏱️ Agent processing took ${end - start} milliseconds.`);
+      console.log(
+         '✅ [API] Tool execution completed. Result length:',
+         result.length
+      );
+      if (!result) {
+         console.warn('⚠️ [API] Warning: result is empty or undefined!');
+      } else {
+         console.log(
+            '📝 [API] Result preview:',
+            result.substring(0, 100) + '...'
+         );
+      }
+
+      // 3. Final Response send-off
+      const processingEnd = performance.now();
+      console.log(
+         `⏱️ [API] Total processing time: ${(processingEnd - processingStart).toFixed(2)}ms`
+      );
+      res.json({
+         success: true,
+         message: result,
+         intent: decision.plan.map((p) => (typeof p === 'string' ? p : p.tool)),
+      });
+
+      const requestEnd = performance.now();
+      console.log(
+         `🚀 [API] Full request completed in ${(requestEnd - requestStart).toFixed(2)}ms`
+      );
    } catch (error) {
-      console.error(error);
+      console.error('❌ [API] Critical error:', error);
       res.status(500).json({ error: 'Failed to process user input' });
    }
 });

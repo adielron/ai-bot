@@ -1,7 +1,12 @@
 Product: BrewMaster Y (Coffee Machine)
+Price: $399 USD / 1,390 ILS / 365 EUR.
+Available Countries: United States, Australia, France, Israel.
+Launch Month: November 2024.
 Operating Instructions:
 1. Water Tank: The removable tank holds 1.5 liters. Always use filtered water to prevent descaling issues.
-2. Brewing: Use the "Intense" setting for espresso shots and "Smooth" for Americano. 
-3. Maintenance: The "Clean" light will flash orange every 200 cycles. To clean, insert the BrewMaster cleaning tablet into the pod slot and run a long cycle without coffee.
+2. Brewing: Use the "Intense" setting for espresso shots and "Smooth" for Americano.
+3. Maintenance: The "Clean" light will flash orange every 200 cycles or every 3 months. To clean, insert the BrewMaster cleaning tablet into the pod slot and run a long cycle without coffee.
 Temperature Control: The machine maintains a constant 92°C (197.6°F) for optimal extraction.
+Weather Note: Best performance is in kitchen humidity between 30-50%. In hot July weather, avoid placing the unit near direct sunlight or steam.
 Troubleshooting: If the red light stays on, the pressure valve is stuck. Turn off the machine for 10 minutes.
+Country Tip: In France and Australia, use the descaling mode every 6 weeks if water hardness is high.

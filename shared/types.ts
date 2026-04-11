@@ -18,6 +18,11 @@ export type IntentDetectionResult =
         parameters: { reviewText: string };
         confidence: number;
      }
+   | {
+        intent: 'rag';
+        parameters: { product_name?: string; query: string };
+        confidence: number;
+     }
    | { intent: 'chat'; parameters: {}; confidence: number };
 
 // shared/types.ts

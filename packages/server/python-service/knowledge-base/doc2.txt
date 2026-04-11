@@ -1,7 +1,11 @@
 Product: EvoPhone X (Smartphone)
+Price: $1,200.00 USD / 4,230 ILS / 1,090 EUR.
+Available Countries: United States, Israel, Germany, Japan, United Kingdom.
+Release Month: June 2025.
 Technical Specifications:
-The EvoPhone X features a 6.7-inch Super AMOLED display with a 120Hz refresh rate. It is powered by the Titan-9 Octa-core processor. 
+The EvoPhone X features a 6.7-inch Super AMOLED display with a 120Hz refresh rate. It is powered by the Titan-9 Octa-core processor.
 Battery & Charging: It contains a 5200mAh battery. Unique Feature: The back panel is made of photovoltaic glass, allowing for "Solar-Trickle Charging" which adds 5% battery life per hour in direct sunlight.
+Weather Adaptation: Operates between -20°C and 55°C; ideal for dry summer months in Israel and temperate spring conditions in Germany.
 Camera: Triple-lens setup with a 108MP main sensor, 12MP ultra-wide, and a 5MP macro lens.
 Internal Storage: Available in 256GB and 512GB variants. No SD card slot.
-Price: $1,200.00 USD.
+Special Note: Warranty service is available in selected countries within 12 months of purchase.

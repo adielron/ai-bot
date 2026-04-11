@@ -1,7 +1,12 @@
 Product: VoltDrive Z (Electric Vehicle)
+Price: $89,990 USD / 329,000 ILS / 83,500 EUR.
+Available Countries: United States, Canada, Norway, Netherlands, Israel.
+Launch Month: October 2024.
 Performance:
 The VoltDrive Z is a dual-motor AWD electric sedan. It achieves 0-60 mph in 3.2 seconds.
 Range: The 95kWh battery pack provides an EPA-estimated range of 410 miles.
 Charging: Supports Ultra-Fast DC charging up to 250kW. A 15-minute charge provides roughly 200 miles of range.
+Weather Performance: Best range occurs in dry summer months like July (average 27°C in Israel), while winter range drops about 15% below 0°C in Norway.
 Autonomous Features: Includes the "Guardian 2.0" suite, which provides lane-keep assist, emergency braking, and a 360-degree holographic parking view.
 Interior: Features vegan leather seating and a 19-inch central touch console.
+Country Note: Designed to handle both coastal humidity and cold winter road conditions in northern Europe.

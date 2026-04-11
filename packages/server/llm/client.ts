@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import template from '../prompts/chatbot.txt';
 
 const client = new OpenAI({
    apiKey: process.env.OPENAI_API_KEY,

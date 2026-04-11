@@ -20,3 +20,11 @@ def analyze_sentiment(request: ReviewRequest):
         "sentiment": result["label"],
         "confidence": result["score"]
     }
+
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    # Port 8001 is key so it doesn't clash with your RAG service
+    uvicorn.run(app, host="0.0.0.0", port=8001)
